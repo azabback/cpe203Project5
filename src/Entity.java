@@ -5,7 +5,7 @@ import java.util.List;
 public abstract class Entity
 {
     private String id;
-    private Point position;
+    public Point position;
     private List<PImage> images;
 
     public Entity(String id, Point position, List<PImage> images){

@@ -1,11 +1,16 @@
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
+import java.util.Optional;
 
 import processing.core.*;
 
 public final class VirtualWorld extends PApplet
 {
+    private static final int TILE_SIZE = 32;
+
     public static final int TIMER_ACTION_PERIOD = 100;
 
     public static final int VIEW_WIDTH = 640;
@@ -42,6 +47,10 @@ public final class VirtualWorld extends PApplet
 
     public long nextTime;
 
+    private GridValues[][] grid;
+
+    private static enum GridValues { BACKGROUND, OBSTACLE, ENTITY};
+
     public void settings() {
         size(VIEW_WIDTH, VIEW_HEIGHT);
     }
@@ -65,6 +74,8 @@ public final class VirtualWorld extends PApplet
         scheduleActions(world, scheduler, imageStore);
 
         nextTime = System.currentTimeMillis() + TIMER_ACTION_PERIOD;
+
+        grid = new GridValues[WORLD_ROWS][WORLD_COLS];
     }
 
     public void draw() {
@@ -98,6 +109,63 @@ public final class VirtualWorld extends PApplet
             }
             view.shiftView(dx, dy);
         }
+    }
+
+    public void mousePressed()
+    {
+        Point pr = mouseToPoint(mouseX, mouseY);
+        Point pressed = view.viewportToWorld(pr.x, pr.y);
+
+        List<Point> around = new ArrayList<>();
+        around.add(pressed);
+        around.add(new Point(pressed.x - 1, pressed.y - 1));
+        around.add(new Point(pressed.x + 1, pressed.y + 1));
+        around.add(new Point(pressed.x - 1, pressed.y + 1));
+        around.add(new Point(pressed.x + 1, pressed.y - 1));
+        around.add(new Point(pressed.x, pressed.y - 1));
+        around.add(new Point(pressed.x, pressed.y + 1));
+        around.add(new Point(pressed.x - 1, pressed.y));
+        around.add(new Point(pressed.x + 1, pressed.y));
+
+        for (Point p : around) {
+            world.setBackground(p, new Background("asphalt", imageStore.getImageList("asphalt")));
+        }
+
+        Car car = new Car("car", pressed, imageStore.getImageList("car"), 2, 3);
+        world.addEntity(car);
+        car.scheduleActions(scheduler, world, imageStore);
+
+        Optional<Entity> smith = world.findNearest(pressed, Blacksmith.class);
+        if (smith.isPresent()) {
+            Point pos1 = smith.get().getPosition();
+            world.removeEntity(smith.get());
+            scheduler.unscheduleAllEvents(smith.get());
+            Office office = new Office("office", pos1, imageStore.getImageList("office"));
+            world.addEntity(office);
+        }
+
+        Optional<Entity> miner = world.findNearest(pressed, Miner_not_Full.class);
+        if (miner.isPresent()) {
+            Point pos2 = miner.get().getPosition();
+            world.removeEntity(miner.get());
+            scheduler.unscheduleAllEvents(miner.get());
+            Pyro pyro = new Pyro("pyro", pos2, imageStore.getImageList("pyro"), 8, 9, false);
+            world.addEntity(pyro);
+            pyro.scheduleActions(scheduler, world, imageStore);
+        }
+
+//        if (grid[pressed.y][pressed.x] == GridValues.OBSTACLE)
+//            grid[pressed.y][pressed.x] = GridValues.BACKGROUND;
+//        else if (grid[pressed.y][pressed.x] == GridValues.BACKGROUND)
+//            grid[pressed.y][pressed.x] = GridValues.OBSTACLE;
+
+        view.drawViewport();
+
+    }
+
+    private Point mouseToPoint(int x, int y)
+    {
+        return new Point(mouseX/TILE_SIZE, mouseY/TILE_SIZE);
     }
 
     public static Background createDefaultBackground(ImageStore imageStore) {

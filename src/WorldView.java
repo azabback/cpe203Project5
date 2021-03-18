@@ -70,4 +70,8 @@ public final class WorldView
         this.drawBackground();
         this.drawEntities();
     }
+
+    public Point viewportToWorld(int col, int row) {
+        return new Point(col + viewport.col, row + viewport.row);
+    }
 }

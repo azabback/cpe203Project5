@@ -54,6 +54,38 @@ public final class WorldModel {
     private static final int VEIN_ROW = 3;
     private static final int VEIN_ACTION_PERIOD = 4;
 
+    private static final String CAR_KEY = "car";
+    private static final int CAR_NUM_PROPERTIES = 7;
+    private static final int CAR_ID = 1;
+    private static final int CAR_COL = 2;
+    private static final int CAR_ROW = 3;
+    private static final int CAR_ACTION_PERIOD = 2;
+    private static final int CAR_ANIMATION_PERIOD = 3;
+
+    private static final String OFFICE_KEY = "office";
+    private static final int OFFICE_NUM_PROPERTIES = 4;
+    private static final int OFFICE_ID = 1;
+    private static final int OFFICE_COL = 2;
+    private static final int OFFICE_ROW = 3;
+
+    private static final String PYRO_KEY = "pyro";
+    private static final int PYRO_NUM_PROPERTIES = 7;
+    private static final int PYRO_ID = 1;
+    private static final int PYRO_COL = 2;
+    private static final int PYRO_ROW = 3;
+    private static final int PYRO_LIMIT = 4;
+    private static final int PYRO_ACTION_PERIOD = 5;
+    private static final int PYRO_ANIMATION_PERIOD = 6;
+
+    private static final String ENGINEER_KEY = "engineer";
+    private static final int ENGINEER_NUM_PROPERTIES = 7;
+    private static final int ENGINEER_ID = 1;
+    private static final int ENGINEER_COL = 2;
+    private static final int ENGINEER_ROW = 3;
+    private static final int ENGINEER_LIMIT = 4;
+    private static final int ENGINEER_ACTION_PERIOD = 5;
+    private static final int ENGINEER_ANIMATION_PERIOD = 6;
+
     public WorldModel(int numRows, int numCols, Background defaultBackground) {
         this.numRows = numRows;
         this.numCols = numCols;
